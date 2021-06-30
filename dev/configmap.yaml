@@ -1,4 +1,4 @@
-hostname: bigbang.dev
+hostname: bigbang.benco.io
 
 flux:
   interval: 1m
@@ -17,6 +17,10 @@ logging:
           requests:
             cpu: .5
           limits: {}
+        # see aks/custom-node.sh for creating this nodepool
+        nodeSelector:
+          agentpool: elastic
+
       data:
         count: 1
         persistence:
@@ -25,6 +29,9 @@ logging:
           requests:
             cpu: .5
           limits: {}
+        # see aks/custom-node.sh for creating this nodepool
+        nodeSelector:
+          agentpool: elastic
 
 fluentbit:
   values:
@@ -101,8 +108,19 @@ gatekeeper:
       limits: {}
 
 twistlock:
-  enabled: false
+  enabled: true
   values:
     console:
       persistence:
         size: 5Gi
+
+# Try to fix jaeger
+jaeger:
+  enabled: true
+  values:
+    image:
+      tag: "1.23.0"
+    jaeger:
+      spec:
+        allInOne:
+          image: "registry1.dso.mil/ironbank/opensource/jaegertracing/all-in-one:1.23.0"

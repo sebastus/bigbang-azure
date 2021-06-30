@@ -1,0 +1,5 @@
+{
+  "sysctls": {
+    "vmMaxMapCount": "262144"
+  }
+}
