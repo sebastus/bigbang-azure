@@ -10,9 +10,9 @@ metadata:
   namespace: bigbang
 spec:
   interval: 1m
-  url: https://github.com/benc-uk/bigbang.git
+  url: __CHANGE_ME__
   ref:
-    branch: main
+    branch: __CHANGE_ME__
   secretRef:
     name: private-git
 ---
