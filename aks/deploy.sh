@@ -27,11 +27,11 @@ done
 [[ $varUnset ]] && exit 1
 
 echo "### Creating & encrypting dev/secrets.enc.yaml"
-envsubst < $scriptPath/secrets.enc.yaml.template > $scriptPath/../base/secrets.enc.yaml
-sops --encrypt --in-place $scriptPath/../base/secrets.enc.yaml
-git add $scriptPath/../base/secrets.enc.yaml
-git commit -m "chore: updated secrets.enc.yaml"
-git push
+# envsubst < $scriptPath/secrets.enc.yaml.template > $scriptPath/../base/secrets.enc.yaml
+# sops --encrypt --in-place $scriptPath/../base/secrets.enc.yaml
+# git add $scriptPath/../base/secrets.enc.yaml
+# git commit -m "chore: updated secrets.enc.yaml"
+# git push
 
 if [[ $DEPLOY_AKS == "true" ]]; then
   echo "### Deploying AKS cluster & Azure resources, please wait this can take some time"
@@ -70,7 +70,6 @@ popd
 echo "### Removing flux-system 'allow-scraping' network policy"
 # If we don't remove this the kustomisation will never reconcile
 kubectl delete netpol -n flux-system allow-scraping
-
 
 echo "### Deploying BigBang!"
 pushd $scriptPath/../dev
