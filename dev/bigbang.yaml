@@ -12,7 +12,7 @@ spec:
   interval: 1m
   url: https://github.com/benc-uk/bigbang.git
   ref:
-    branch: main
+    branch: azure
   secretRef:
     name: private-git
 ---

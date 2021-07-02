@@ -27,9 +27,11 @@ done
 [[ $varUnset ]] && exit 1
 
 echo "### Creating & encrypting dev/secrets.enc.yaml"
-envsubst < $scriptPath/secrets.enc.yaml.template > $scriptPath/secrets.enc.yaml.temp
-sops -e $scriptPath/secrets.enc.yaml.temp > $scriptPath/../base/secrets.enc.yaml
-rm -rf $scriptPath/secrets.enc.yaml.temp
+envsubst < $scriptPath/secrets.enc.yaml.template > $scriptPath/../base/secrets.enc.yaml
+sops --encrypt --in-place $scriptPath/../base/secrets.enc.yaml
+git add $scriptPath/../base/secrets.enc.yaml
+git commit -m "chore: updated secrets.enc.yaml"
+git push
 
 if [[ $DEPLOY_AKS == "true" ]]; then
   echo "### Deploying AKS cluster & Azure resources, please wait this can take some time"
@@ -65,17 +67,18 @@ pushd $scriptPath/bigbang
   --registry-email bigbang@bigbang.dev 
 popd
 
-echo "### Removing flux-system network policies"
-#kubectl delete netpol -n flux-system allow-webhooks
+echo "### Removing flux-system 'allow-scraping' network policy"
+# If we don't remove this the kustomisation will never reconcile
 kubectl delete netpol -n flux-system allow-scraping
-#kubectl delete netpol -n flux-system allow-egress
+
 
 echo "### Deploying BigBang!"
 pushd $scriptPath/../dev
 kubectl apply -f bigbang.yaml
 popd
 
-echo "### Verifying with 'kubectl get gitrepositories -A'"
-kubectl get gitrepositories -A
-echo "### Verifying with 'kubectl get -n bigbang kustomizations'"
-kubectl get -n bigbang kustomizations
+echo "### Sleeping..."
+sleep 15
+
+echo "### Verifying gitrepositories & kustomizations"
+kubectl get -n $namespace gitrepositories,kustomizations -A
