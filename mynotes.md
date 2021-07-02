@@ -24,7 +24,7 @@ git push -u origin main
 create branch called "azure" and push
 
 ```
-git new azure
+git checkout -b azure
 git push -u origin azure
 ```
 
