@@ -1,3 +1,4 @@
 **/.terra*
 .secrets
-secrets.*
+secrets.sh
+deploy-vars.sh
