@@ -1,7 +1,7 @@
 export AZURE_REGION="uksouth"
 export AZURE_RESGRP="bigbang"
 export DEPLOY_AKS="false"
-export DEPLOY_FLUX="false"
+export DEPLOY_FLUX="true"
 
 # Strongly advise NOT changing these
 export AZURE_DEPLOY_NAME="bigbang"

@@ -4,7 +4,6 @@
 # This is a script that deploys BigBang into Azure via AKS
 #
 
-set -e
 scriptPath=$(dirname "$0")
 
 test -f secrets.sh        || { echo -e "💥 Error! secrets.sh not found, please create"; exit 1; }
@@ -22,6 +21,27 @@ for varName in IRON_BANK_USER IRON_BANK_PAT GITHUB_USER GITHUB_PAT; do
 done
 [[ $varUnset ]] && exit 1
 
+# This part creates the GPG keys without user input
+gpg -K $GPG_KEY_NAME > /dev/null 2>&1
+if [[ $? == "2" ]]; then
+  echo "### Creating GPG keys unattended"
+  gpg --quick-generate-key --batch --passphrase='' $GPG_KEY_NAME
+  fingerPrint=$(gpg -K $GPG_KEY_NAME | sed -e 's/ *//;2q;d;')
+  gpg --quick-add-key --batch --passphrase='' "${fingerPrint}" rsa4096 encr
+  sed -i "s/pgp: FALSE_KEY_HERE/pgp: ${fingerPrint}/" $scriptPath/../.sops.yaml
+  
+  echo "### Updating .sops.yaml in git"
+  git add $scriptPath/../.sops.yaml
+  git commit -m "Updated .sops.yaml by deployment script $(date)"
+  git push
+fi
+
+fingerPrint=$(gpg -K $GPG_KEY_NAME | sed -e 's/ *//;2q;d;')
+echo "### Key $GPG_KEY_NAME ($fingerPrint) already exists, skipping creation"
+
+set -e
+
+# Create & encrpyt the secrets.enc.yaml file from template using sops and envsubst
 echo "### Creating & encrypting dev/secrets.enc.yaml"
 envsubst < $scriptPath/secrets.enc.yaml.template > $scriptPath/../base/secrets.enc.yaml
 sops --encrypt --in-place $scriptPath/../base/secrets.enc.yaml
@@ -44,7 +64,6 @@ kubectl create namespace $NAMESPACE
 kubectl create namespace flux-system
 
 echo "### Creating secret sops-gpg in $NAMESPACE"
-fingerPrint=$(gpg -K $GPG_KEY_NAME | sed -e 's/ *//;2q;d;')
 gpg --export-secret-key --armor ${fingerPrint} | kubectl create secret generic sops-gpg -n $NAMESPACE --from-file=bigbangkey.asc=/dev/stdin
 
 echo "### Creating secret docker-registry in flux-system"
