@@ -26,7 +26,7 @@ for varName in IRON_BANK_USER IRON_BANK_PAT GITHUB_USER GITHUB_PAT; do
 done
 [[ $varUnset ]] && exit 1
 
-echo "### Creating & encrypting dev/secrets.enc.yaml"
+# echo "### Creating & encrypting dev/secrets.enc.yaml"
 # envsubst < $scriptPath/secrets.enc.yaml.template > $scriptPath/../base/secrets.enc.yaml
 # sops --encrypt --in-place $scriptPath/../base/secrets.enc.yaml
 # git add $scriptPath/../base/secrets.enc.yaml
@@ -47,9 +47,9 @@ echo "### Creating namespaces '$namespace' & 'flux-system'"
 kubectl create namespace $namespace
 kubectl create namespace flux-system
 
-echo "### Creating secret sops-gpg in $namespace"
-fingerPrint=$(gpg --list-keys --with-fingerprint $gpgKeyName | sed -e 's/ *//;2q;d;' | sed 's/ //g')
-gpg --export-secret-key --armor ${fingerPrint} | kubectl create secret generic sops-gpg -n $namespace --from-file=bigbangkey=/dev/stdin
+# echo "### Creating secret sops-gpg in $namespace"
+# fingerPrint=$(gpg --list-keys --with-fingerprint $gpgKeyName | sed -e 's/ *//;2q;d;' | sed 's/ //g')
+# gpg --export-secret-key --armor ${fingerPrint} | kubectl create secret generic sops-gpg -n $namespace --from-file=bigbangkey=/dev/stdin
 
 echo "### Creating secret docker-registry in flux-system"
 kubectl create secret docker-registry private-registry --docker-server=registry1.dso.mil --docker-username="${IRON_BANK_USER}" --docker-password="${IRON_BANK_PAT}" -n flux-system
