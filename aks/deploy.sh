@@ -7,10 +7,10 @@
 set -e
 scriptPath=$(dirname "$0")
 
-test -f secrets.sh || { echo -e "💥 Error! secrets.sh not found, please create"; exit 1; }
-test -f deploy-vars.sh || { echo -e "💥 Error! deploy-vars.sh not found, please create"; exit 1; }
-which sops > /dev/null || { echo -e "💥 Error! Command sops not installed"; exit 1; }
-which az > /dev/null || { echo -e "💥 Error! Command az not installed"; exit 1; }
+test -f secrets.sh        || { echo -e "💥 Error! secrets.sh not found, please create"; exit 1; }
+test -f deploy-vars.sh    || { echo -e "💥 Error! deploy-vars.sh not found, please create"; exit 1; }
+which sops > /dev/null    || { echo -e "💥 Error! Command sops not installed"; exit 1; }
+which az > /dev/null      || { echo -e "💥 Error! Command az not installed"; exit 1; }
 which kubectl > /dev/null || { echo -e "💥 Error! Command kubectl not installed"; exit 1; }
 
 source $scriptPath/secrets.sh
@@ -26,7 +26,7 @@ echo "### Creating & encrypting dev/secrets.enc.yaml"
 envsubst < $scriptPath/secrets.enc.yaml.template > $scriptPath/../base/secrets.enc.yaml
 sops --encrypt --in-place $scriptPath/../base/secrets.enc.yaml
 git add $scriptPath/../base/secrets.enc.yaml
-git commit -m "chore: updated secrets.enc.yaml"
+git commit -m "Updated by deployment script $(date)"
 git push
 
 if [[ $DEPLOY_AKS == "true" ]]; then

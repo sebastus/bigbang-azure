@@ -92,6 +92,8 @@ monitoring:
 
 gatekeeper:
   enabled: true
+  git:
+    tag: 3.4.0-bb.4
   values:
     replicas: 1
     resources:
