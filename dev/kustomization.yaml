@@ -15,9 +15,9 @@ patchesStrategicMerge:
       name: bigbang
     spec:
       interval: 1m
-      ref:
-        $patch: replace
-        semver: "1.7.0"
+  #ref:
+  #  $patch: replace
+  #  semver: "1.7.0"
   - |-
     apiVersion: helm.toolkit.fluxcd.io/v2beta1
     kind: HelmRelease
