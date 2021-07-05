@@ -47,8 +47,14 @@ In the interest of not duplicating instructions, follow the steps in the [main r
 
 ### 4. Deploy
 
-1. Copy `secrets.sh.sample` to `secrets.sh` and edit to set the values
+1. Copy `secrets.sh.sample` to `secrets.sh` and edit to set with your own values and secrets
 2. Copy `deploy-vars.sh.sample` to `deploy-vars.sh` and configure as you wish
 
-
 Run the deployment script
+
+```bash
+cd aks
+./deploy.sh
+```
+
+Run `kubectl get gitrepositories,ks,hr -A` to see the status of the deployment
