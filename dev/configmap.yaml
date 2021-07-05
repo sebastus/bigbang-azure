@@ -93,7 +93,7 @@ monitoring:
 gatekeeper:
   enabled: true
   git:
-    tag: main
+    tag: 3.3.0-bb.5
   values:
     replicas: 1
     resources:
