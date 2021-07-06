@@ -10,9 +10,9 @@ metadata:
   namespace: bigbang
 spec:
   interval: 1m
-  url: __CHANGE_ME__
+  url: https://github.com/sebastus/bigbang-azure.git
   ref:
-    branch: __CHANGE_ME__
+    branch: greg-azure
   secretRef:
     name: private-git
 ---
